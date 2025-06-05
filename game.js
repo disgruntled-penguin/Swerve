@@ -31,17 +31,17 @@ let gameOptions= {
 }
 
 var game = new Phaser.Game(config);
-
+ gameOver = false;
 function preload ()
 {
     this.load.image("clouds-white", "assets/clouds-white.png");
     this.load.image('sky', 'assets/skypink.png');
     this.load.image('grass-2', 'assets/grass-2.png');
     this.load.image('ground', 'assets/grass-1.png (2).png');
-    this.load.image('obstacle', 'assets/obstacle.png');
+    this.load.image('obstacle', 'assets/obstacle (1).png');
    this.load.spritesheet('girl', 
-      'assets/sprite (2).png',
-      { frameWidth: 192, frameHeight: 192 }
+      'assets/sprite (2) (1).png',
+      { frameWidth: 132, frameHeight: 174 }
    );
 }
 
@@ -60,7 +60,8 @@ function create ()
   grasstile = this.add.tileSprite(670, 600, 1334, 229, "ground");
   //grasstile = this.add.tileSprite(700, 890, 1334, 400, "ground").setScale(2);
   
-   this.add.image(700, 400, 'obstacle');
+  obstacles = this.physics.add.group();
+  obstacles.create(700, 300, 'obstacle');
     //groundsprite = this.add.tileSprite(700, 850,1400, 120, "ground").setScale(2).refreshBody();
     
 
@@ -71,6 +72,10 @@ function create ()
 //this.player.setGravityY(gameOptions.playerGravity);
 //this.player.setDepth(2);
 this.physics.add.collider(player, grass);
+this.physics.add.collider(obstacles, grass);
+
+
+
 
  player.setBounce(0.02);
  player.setCollideWorldBounds(true);
@@ -81,6 +86,10 @@ this.physics.add.collider(player, grass);
     frameRate: 20
     
  });
+
+//const y = phaser.math.betweem(250,300);
+//obstacle.create(700, 400, 'obstacle');
+
 
  this.anims.create({
     key: ':O',
@@ -134,12 +143,30 @@ this.physics.add.collider(player, grass);
    
 */
 
+this.physics.add.collider(player, obstacles, hitObstacle, null, this );
+function hitObstacle (player, obstacle){
+    player.anims.play('run', true);
+    //this.physics.pause();
+    player.setTint(0xff0000);
+   // player.anims.play(':O');
+    //gameOver = true;
+}
+this.scheduleNextObstacle;
+function scheduleNextObstacle(player) {
+    const delay = Phaser.Math.Between(1000, 3000); // Random delay between 1s–3s
+
+    this.time.delayedCall(delay, () => {
+        this.spawnObstacle(player);
+        this.scheduleNextObstacle(player); // Schedule the next one recursively
+    }, null, this);
+}
+
  }
 
 function update ()
 {
-    cloudsWhite.tilePositionX += 1;
-    grasstile.tilePositionX += 2;
+    
+    obstacles.setVelocityX(-160)
     //cloudsWhite.tilePositionX += 0.5;
     //cloudsWhiteSmall.tilePositionX += 0.25;
      /*  if (cursors.left.isDown)
@@ -171,21 +198,30 @@ function update ()
 
         
 
-        if (player.body.touching.down)
+        if (player.body.touching.down )
         {
             //player.setVelocityX(160);
-            player.anims.play('run', true);
+            
+           player.anims.play('run', true);
+           //player.anims.play(':O');
         }
         if (cursors.space.isDown)
         {
+           
            // player.setVelocityX(160);
-            player.setVelocityY(-300);
+            player.setVelocityY(-550);
+            //player.anims.play(':O');
 
             player.anims.play('run', true);
         }
 
-        if(player.body.touching.obstacle){
-            player.setVelocityX(0);
-            player.anims.play(':O');
-        }
+        
+            cloudsWhite.tilePositionX += 1;
+            grasstile.tilePositionX += 2; 
+        
+
+      //  if(player.body.touching.obstacle){
+       //     player.setVelocityX(0);
+      //      player.anims.play(':O');
+       // }
 }
