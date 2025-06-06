@@ -10,7 +10,7 @@
 
 
 
-play it here!!: 
+play it here :3 : [nishi.itch.io/swerve](https://nishixoxo.itch.io/swerve) 
 
 
 
@@ -28,6 +28,5 @@ all the art is mine!! except the [clouds](https://www.thepolyglotdeveloper.com/2
 
 
 
-=======
-chrome dino game but its a girl naruto-running and jumping over weird men
+
 
