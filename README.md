@@ -1,22 +1,16 @@
 
 
 
-Chrome dino game but you're (a pretty girl )naruto-running and jumping over weird men. game ends when you fail to do so :(
+Chrome dino game but you're (a pretty girl) naruto-running and jumping over weird men. game ends when you fail to do so :(
 
-meet your character!! 
-<img src= assets/girl.png width="147" height="147">
-
-## Game Features
-- sounds like the og
-- i made all of the art, please dont judge, its my first time :') (except the clouds)
-- built with phaser 3 and i will never be using it again
+this is her btw</b></b></b>
+<img src= assets/girl.png width="147" height="147"></b></b></b>
 
 
-## How to Play
-1. Press SPACE to jump
-2. jump over the men
-3. Game gets progressively faster as you score more points
-4. press SPACE to restart/ click on the button
+
+
+
+play it here!!: 
 
 
 
@@ -26,8 +20,8 @@ meet your character!!
 2. open 'index.html' on live server
 
 
-- if anyone can help me with why my obstacles arent being randomely generated in clusters, please do
-
+if anyone can help me with why my obstacles arent being randomly generated in clusters(take a look at game.js), please do
+all the art is mine!! except the [clouds](https://www.thepolyglotdeveloper.com/2020/08/continuous-side-scrolling-phaser-game-tile-sprites/)
 
 
 
