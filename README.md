@@ -17,7 +17,7 @@ play it here :3 : [nishi.itch.io/swerve](https://nishixoxo.itch.io/swerve)
 
 
 
-If anyone can help me with why my obstacles arent being randomly generated in clusters(take a look at game.js), please do <br>
+<!--If anyone can help me with why my obstacles arent being randomly generated in clusters(take a look at game.js), please do <br>-->
 All the art is mine!! except the [clouds](https://www.thepolyglotdeveloper.com/2020/08/continuous-side-scrolling-phaser-game-tile-sprites/)
 
 
