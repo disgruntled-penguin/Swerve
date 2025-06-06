@@ -10,7 +10,7 @@
 
 
 
-play it here :3 : [nishi.itch.io/swerve](https://nishixoxo.itch.io/swerve) 
+[play it here :3](https://nishixoxo.itch.io/swerve) 
 
 
 
