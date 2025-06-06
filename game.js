@@ -1,5 +1,3 @@
-
-
 var config = {
     type: Phaser.AUTO,
     width: 1334,
@@ -18,38 +16,45 @@ var config = {
     }
 };
 
-let gameOptions= {
-   groundspeedrange : [300,300],
-   skyspeedrange : 80,
-   playergravity : 900,
-   jumpforce: 400,
-   jumps: 2,
-   playerStartposition: 200,
-   obstaclepercent: 25,
-   
 
-}
 
 var game = new Phaser.Game(config);
  gameOver = false;
+let score = 0;
+let scoreText;
+let retryButton;
+let cursors;
+let jumpSound;
+let pointSound;
+let dieSound;
+let baseObstacleSpeed = -250;
+let baseGrassSpeed = 3;
+
 function preload ()
 {
     this.load.image("clouds-white", "assets/clouds-white.png");
     this.load.image('sky', 'assets/skypink.png');
-    this.load.image('grass-2', 'assets/grass-2.png');
-    this.load.image('ground', 'assets/grass-1.png (2).png');
-    this.load.image('obstacle', 'assets/obstacle (1).png');
+    this.load.image('grass-2', 'assets/invisible.png');
+    this.load.image('ground', 'assets/grass.png');
+    this.load.image('obstacle', 'assets/obstacle.png');
+    this.load.image('retry', 'assets/retrypink.png');
    this.load.spritesheet('girl', 
-      'assets/sprite (2) (1).png',
+      'assets/sprite.png',
       { frameWidth: 132, frameHeight: 174 }
    );
+   this.load.audio('jump', 'assets/jump.wav');
+   this.load.audio('point', 'assets/point.wav');
+   this.load.audio('die', 'assets/die.wav');
 }
 
 function create ()
 {
+   // sounds :3
+   jumpSound = this.sound.add('jump');
+   pointSound = this.sound.add('point');
+   dieSound = this.sound.add('die');
 
   
-   //this.add.image(700, 350, 'sky');  //adds sky
    skysprite = this.add.tileSprite(700, 350, 1400, 700, "sky");
    cloudsWhite = this.add.tileSprite(640, 200, 1334, 400, "clouds-white");
    
@@ -58,19 +63,12 @@ function create ()
   grass.create(670, 600, 'ground');
  
   grasstile = this.add.tileSprite(670, 600, 1334, 229, "ground");
-  //grasstile = this.add.tileSprite(700, 890, 1334, 400, "ground").setScale(2);
-  
+ 
   obstacles = this.physics.add.group();
-  obstacles.create(700, 300, 'obstacle');
-    //groundsprite = this.add.tileSprite(700, 850,1400, 120, "ground").setScale(2).refreshBody();
-    
+  
 
+ player = this.physics.add.sprite(200, 100, 'girl');
 
- //obstacle = this.physics.add.staticGroup();
- //.create(700, 850, 'obstacle')
- player = this.physics.add.sprite(0, 100, 'girl');
-//this.player.setGravityY(gameOptions.playerGravity);
-//this.player.setDepth(2);
 this.physics.add.collider(player, grass);
 this.physics.add.collider(obstacles, grass);
 
@@ -87,8 +85,7 @@ this.physics.add.collider(obstacles, grass);
     
  });
 
-//const y = phaser.math.betweem(250,300);
-//obstacle.create(700, 400, 'obstacle');
+
 
 
  this.anims.create({
@@ -100,128 +97,112 @@ this.physics.add.collider(obstacles, grass);
  this.anims.create({
     key: 'run',
     frames: this.anims.generateFrameNumbers('girl', { start: 2, end: 4 }),
-    frameRate: 10,
+    frameRate: 15,
     repeat: -1
  });
  cursors = this.input.keyboard.createCursorKeys();
 
- /*this.groundGroup = this.add.group();
-  this.skyGroup = this.add.group();
 
-      // group with all active firecamps.
-        this.obstacleGroup = this.add.group({
-
-            // once a firecamp is removed, it's added to the pool
-            removeCallback: function(obstacle){
-                obstacle.scene.obstaclePool.add(obstacle)
-            }
-        });
-
-        // fire pool
-        this.obstacleGroupPool = this.add.group({
-
-            // once a fire is removed from the pool, it's added to the active fire group
-            removeCallback: function(obstacle){
-                obstacle.scene.obstacleGroup.add(obstacle)
-            }
-        });
-
-    this.addsky()
-    this.addground()
-    this.playerJumps = 0;
-     // the player is not dying
-    this.dying = false;
-    
-       this.groundCollider = this.physics.add.collider(this.player, this.groundGroup, function(){
-
-            // play "run" animation if the player is on a platform
-            if(!this.player.anims.isPlaying){
-                this.player.anims.play("run");
-            }
-        }, null, this);
-
-   
-*/
 
 this.physics.add.collider(player, obstacles, hitObstacle, null, this );
 function hitObstacle (player, obstacle){
-    player.anims.play('run', true);
-    //this.physics.pause();
-    player.setTint(0xff0000);
-   // player.anims.play(':O');
-    //gameOver = true;
+    if (!this.gameOver) {
+        this.gameOver = true;
+        this.physics.pause(); 
+        //player.setTint(0xff0000);
+        player.anims.play(':O'); 
+        dieSound.play(); 
+    }
 }
-this.scheduleNextObstacle;
-function scheduleNextObstacle(player) {
-    const delay = Phaser.Math.Between(1000, 3000); // Random delay between 1s–3s
 
+function spawnObstacle() {
+    const clusterCount = Phaser.Math.Between(1, 3); // supposwed to spawn clustered men but idfk
+    for (let i = 0; i < clusterCount; i++) {
+        const x = config.width + 100 + (i * 50);
+        const obstacle = obstacles.create(x, 0, 'obstacle');
+        // men speed
+        const speedMultiplier = 1 + (Math.floor(score / 100) * 0.1);
+        obstacle.setVelocityX(baseObstacleSpeed * speedMultiplier);
+        obstacle.body.setAllowGravity(false);
+
+        const scale = Phaser.Math.FloatBetween(0.7, 1);
+        obstacle.setScale(scale);
+
+       
+        obstacle.y = 486 - (obstacle.displayHeight/2);
+    }
+}
+
+function scheduleNextObstacle() {
+    const delay = Phaser.Math.Between(3500, 5000); //delay freq
     this.time.delayedCall(delay, () => {
-        this.spawnObstacle(player);
-        this.scheduleNextObstacle(player); // Schedule the next one recursively
+        spawnObstacle();
+        scheduleNextObstacle.call(this);
     }, null, this);
 }
 
- }
+//spawn of the men
+scheduleNextObstacle.call(this);
+
+this.gameOver = false;
+this.gameStarted = true;
+score = 0;
+player.anims.play('still');
+scoreText = this.add.text(20, 20, 'Score: 0', {
+    fontSize: '32px',
+    fill: '#fd5e83',
+    fontFamily: 'monospace'
+});
+scoreText.setScrollFactor(0);
+overButton = this.add.text(config.width / 2, 100, 'Game Over', {
+    fontSize: '48px',
+    fill: '#fff',
+    fontFamily: 'monospace',
+    backgroundColor: '#fdb9b5',
+    padding: { left: 20, right: 20, top: 10, bottom: 10 },
+    align: 'center'
+}).setOrigin(0.5).setInteractive().setVisible(false);
+retryButton = this.add.image(config.width / 2, 300, 'retry')
+    .setOrigin(0.5)
+    .setInteractive()
+    .setVisible(false);
+retryButton.on('pointerdown', () => {
+    this.scene.restart();
+});
+}
 
 function update ()
 {
+    if (this.gameOver) {
+        retryButton.setVisible(true);
+        overButton.setVisible(true);
+        if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
+            this.scene.restart();
+        }
+        return;
+    }
     
-    obstacles.setVelocityX(-160)
-    //cloudsWhite.tilePositionX += 0.5;
-    //cloudsWhiteSmall.tilePositionX += 0.25;
-     /*  if (cursors.left.isDown)
-        {
-            player.setVelocityX(160);
-
+    score += 1;
+    if (score % 1000 === 0) { // Play point sound every 100 points, its 1000 because phaser stupid
+        pointSound.play();
+    }
+    scoreText.setText('Score: ' + Math.floor(score / 10));
+    cloudsWhite.tilePositionX += 1;
+    
+    // GRASS CHANGE SPEEDDDD
+    const speedMultiplier = 1 + (Math.floor(score / 100) * 0.1);
+    grasstile.tilePositionX += baseGrassSpeed * speedMultiplier;
+    
+    if (player.body.touching.down ) {
+        player.anims.play('run', true);
+        if (Phaser.Input.Keyboard.JustDown(cursors.space)) {
+            player.setVelocityY(-400);
+            // player.setVelocityX(80);
             player.anims.play('run', true);
+            jumpSound.play(); 
         }
-       if (cursors.right.isDown)
-        {
-            player.setVelocityX(160);
-
-            player.anims.play('run', true);
-        }
-        if (cursors.space.isDown)
-        {
-            player.setVelocityX(160);
-            player.setVelocityY(300);
-
-            player.anims.play('run', true);
-        }
-        else
-        {
-            player.setVelocityX(0);
-
-            player.anims.play('still');
-        } */
-       
-
-        
-
-        if (player.body.touching.down )
-        {
-            //player.setVelocityX(160);
-            
-           player.anims.play('run', true);
-           //player.anims.play(':O');
-        }
-        if (cursors.space.isDown)
-        {
-           
-           // player.setVelocityX(160);
-            player.setVelocityY(-550);
-            //player.anims.play(':O');
-
-            player.anims.play('run', true);
-        }
-
-        
-            cloudsWhite.tilePositionX += 1;
-            grasstile.tilePositionX += 2; 
-        
-
-      //  if(player.body.touching.obstacle){
-       //     player.setVelocityX(0);
-      //      player.anims.play(':O');
-       // }
+    } else {
+        player.anims.stop();
+        player.setFrame(2); 
+    }
 }
