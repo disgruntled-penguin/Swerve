@@ -1,3 +1,4 @@
+
 # Girl Naruto-Runner 
 
 Chrome dino game but you're (a pretty girl )naruto-running and jumping over weird men. game ends when you fail to do so :(
@@ -32,4 +33,7 @@ meet your character!!
 
 
 
+
+=======
+chrome dino game but its a girl naruto-running and jumping over weird men
 
