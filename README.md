@@ -1,9 +1,9 @@
 
 
 
-Chrome dino game but you're (a pretty girl) naruto-running and jumping over weird men. game ends when you fail to do so :(
+## Chrome dino game but you're (a pretty girl) naruto-running and jumping over weird men. game ends when you fail to do so :(
 
-this is her btw !!<br>
+## this is her btw !!<br>
 <img src= assets/girll.png>
 
 
