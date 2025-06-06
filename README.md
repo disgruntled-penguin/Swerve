@@ -4,7 +4,7 @@
 Chrome dino game but you're (a pretty girl) naruto-running and jumping over weird men. game ends when you fail to do so :(
 
 this is her btw !!<br>
-<img src= assets/girl.png width="256" height="256">
+<img src= assets/girl.png>
 
 
 
