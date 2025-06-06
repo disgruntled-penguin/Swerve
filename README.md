@@ -1,10 +1,10 @@
 
-# Girl Naruto-Runner 
+
 
 Chrome dino game but you're (a pretty girl )naruto-running and jumping over weird men. game ends when you fail to do so :(
 
 meet your character!! 
-<img src= assets/girl.png>
+<img src= assets/girl.png width="147" height="147>
 
 ## Game Features
 - sounds like the og
